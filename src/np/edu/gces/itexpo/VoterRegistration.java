@@ -2,15 +2,17 @@ package np.edu.gces.itexpo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.sql.*;
 
-public class VoterRegistration extends JFrame {
+public class VoterRegistration extends JFrame implements ActionListener {
 	private String databaseURL;
 	private String databaseID;
 	private String databaseName;
 	private String databasePassword;
 
 	private Connection connection;
+	private PreparedStatement statement;
 
 	private JLabel nameLabel, phoneLabel, barcodeLabel;
 	private JTextField nameField, phoneField, barcodeField;
@@ -28,6 +30,8 @@ public class VoterRegistration extends JFrame {
 
 		registerButton = new JButton("Register Voter");
 		showVotersButton = new JButton("Show Voters");
+
+		registerButton.addActionListener(this);
 
 //		Add components to JFrame
 		this.add(nameLabel);
@@ -51,8 +55,6 @@ public class VoterRegistration extends JFrame {
 		this.setVisible(true);
 
 		try {
-			PreparedStatement statement;
-			
 //			Load database credentials from custom EnvironmentVariable class
 			databaseURL = EnvironmentVariable.load("databaseURL");
 			databaseID = EnvironmentVariable.load("databaseID");
@@ -64,8 +66,6 @@ public class VoterRegistration extends JFrame {
 			System.out.println("Connection to remote database established.");
 			statement = connection.prepareStatement("USE " + databaseName);
 			statement.executeUpdate();
-			statement = connection.prepareStatement("INSERT INTO voters (name, phone, barcode, vote) VALUES ('ramesh', '9800000000', '12345678912', 1)");
-			statement.executeUpdate();
 		} catch(SQLException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Connection to database couldn't be established!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
@@ -76,5 +76,27 @@ public class VoterRegistration extends JFrame {
 	}
 	public static void main(String[] args) {
 		new VoterRegistration();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton source = (JButton) e.getSource();
+		if(source == registerButton) {
+			String name = nameField.getText().trim();
+			String phone = phoneField.getText().trim();
+			String barcode = barcodeField.getText().trim();
+
+			try {
+				statement = connection.prepareStatement("INSERT INTO voters (name, phone, barcode) VALUES (?, ?, ?)");
+				statement.setString(1, name);
+				statement.setString(2, phone);
+				statement.setString(3, barcode);
+				int rows = statement.executeUpdate();
+				JOptionPane.showMessageDialog(this, "Voter Registration Successful!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
+			} catch(SQLException ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 }
