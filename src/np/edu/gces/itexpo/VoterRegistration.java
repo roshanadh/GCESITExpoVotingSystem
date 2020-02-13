@@ -23,7 +23,7 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 	private JTextField nameField, phoneField, barcodeField;
 	private JButton registerButton, showVotersButton;
 
-	private Font labelFont, fieldFont;
+	private Font labelFont, fieldFont, buttonFont;
 	private SpringLayout layout;
 
 	public VoterRegistration() {
@@ -42,41 +42,43 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 
 		labelFont = new Font("Segoe UI", Font.PLAIN, 13);
 		fieldFont = new Font("Verdana", Font.PLAIN, 13);
+		buttonFont = new Font("Verdana", Font.PLAIN, 13);
 
 		layout = new SpringLayout();
 
-		statusBarLabel.setSize(new Dimension(this.getWidth(), 10));
 		nameLabel.setFont(labelFont);
 		phoneLabel.setFont(labelFont);
 		barcodeLabel.setFont(labelFont);
+
+		nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		phoneLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		barcodeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		nameLabel.setPreferredSize(new Dimension(60, 20));
+		phoneLabel.setPreferredSize(new Dimension(60, 20));
+		barcodeLabel.setPreferredSize(new Dimension(60, 20));
 
 		nameField.setFont(fieldFont);
 		phoneField.setFont(fieldFont);
 		barcodeField.setFont(fieldFont);
 
-		nameField.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-		phoneField.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-		barcodeField.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		nameField.setBorder(BorderFactory.createLineBorder(new Color(75, 119, 190)));
+		phoneField.setBorder(BorderFactory.createLineBorder(new Color(75, 119, 190)));
+		barcodeField.setBorder(BorderFactory.createLineBorder(new Color(75, 119, 190)));
 
 		nameField.setPreferredSize(new Dimension(20, 30));
 		phoneField.setPreferredSize(new Dimension(20, 30));
 		barcodeField.setPreferredSize(new Dimension(20, 30));
 
-		registerButton.setForeground(Color.BLUE);
+		registerButton.setForeground(new Color(75, 119, 190));
 		registerButton.setBackground(Color.WHITE);
+		registerButton.setFont(buttonFont);
+		registerButton.setPreferredSize(new Dimension(150,40));
 
-		registerButton.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-		registerButton.setFocusPainted(false);
-		registerButton.setOpaque(true);
-		registerButton.setPreferredSize(new Dimension(100,40));
-
-		showVotersButton.setForeground(Color.BLUE);
+		showVotersButton.setForeground(new Color(75, 119, 190));
 		showVotersButton.setBackground(Color.WHITE);
-
-		showVotersButton.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-		showVotersButton.setFocusPainted(false);
-		showVotersButton.setOpaque(true);
-		showVotersButton.setPreferredSize(new Dimension(100,40));
+		showVotersButton.setFont(buttonFont);
+		showVotersButton.setPreferredSize(new Dimension(150,40));
 
 		nameField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -101,28 +103,28 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 
 //		Put constraints to components
 		layout.putConstraint(SpringLayout.NORTH, nameLabel, 30, SpringLayout.NORTH, this);
-		layout.putConstraint(SpringLayout.WEST, nameLabel, 50, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, nameLabel, 30, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, nameField, 26, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.WEST, nameField, 20, SpringLayout.EAST, nameLabel);
 
 		layout.putConstraint(SpringLayout.NORTH, phoneLabel, 30, SpringLayout.SOUTH, nameLabel);
-		layout.putConstraint(SpringLayout.WEST, phoneLabel, 50, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, phoneLabel, 30, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, phoneField, -6, SpringLayout.NORTH, phoneLabel);
 		layout.putConstraint(SpringLayout.WEST, phoneField, 0, SpringLayout.WEST, nameField);
 
 		layout.putConstraint(SpringLayout.NORTH, barcodeLabel, 30, SpringLayout.SOUTH, phoneLabel);
-		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 50, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 30, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, barcodeField, -6, SpringLayout.NORTH, barcodeLabel);
 		layout.putConstraint(SpringLayout.WEST, barcodeField, 0, SpringLayout.WEST, nameField);
 
-		layout.putConstraint(SpringLayout.NORTH, registerButton, 40, SpringLayout.SOUTH, barcodeLabel);
-		layout.putConstraint(SpringLayout.WEST, registerButton, 110, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.NORTH, registerButton, 30, SpringLayout.SOUTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.WEST, registerButton, 160, SpringLayout.WEST, this);
 
-		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 40, SpringLayout.SOUTH, barcodeLabel);
-		layout.putConstraint(SpringLayout.WEST, showVotersButton, 40, SpringLayout.EAST, registerButton);
+		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 20, SpringLayout.SOUTH, registerButton);
+		layout.putConstraint(SpringLayout.WEST, showVotersButton, 160, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.SOUTH, statusBarLabel, 0, SpringLayout.SOUTH, this.getContentPane());
 		layout.putConstraint(SpringLayout.WEST, statusBarLabel, 0, SpringLayout.WEST, this.getContentPane());
@@ -145,7 +147,7 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 
 		this.setLayout(layout);
 		this.setTitle("8th GCES IT Expo Voter Registration");
-		this.setSize(480, 300);
+		this.setSize(480, 360);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
