@@ -33,9 +33,9 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		barcodeLabel = new JLabel("Barcode");
 		statusBarLabel = new JLabel("GCES IT EXPO", SwingConstants.CENTER);
 
-		nameField = new JTextField(10);
-		phoneField = new JTextField(10);
-		barcodeField = new JTextField(10);
+		nameField = new JTextField(25);
+		phoneField = new JTextField(25);
+		barcodeField = new JTextField(25);
 
 		registerButton = new JButton("Register Voter");
 		showVotersButton = new JButton("Show Voters");
@@ -53,6 +53,14 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		nameField.setFont(fieldFont);
 		phoneField.setFont(fieldFont);
 		barcodeField.setFont(fieldFont);
+
+		nameField.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		phoneField.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		barcodeField.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+
+		nameField.setPreferredSize(new Dimension(20, 30));
+		phoneField.setPreferredSize(new Dimension(20, 30));
+		barcodeField.setPreferredSize(new Dimension(20, 30));
 
 		registerButton.setForeground(Color.BLUE);
 		registerButton.setBackground(Color.WHITE);
@@ -92,29 +100,29 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		registerButton.addActionListener(this);
 
 //		Put constraints to components
-		layout.putConstraint(SpringLayout.NORTH, nameLabel, 20, SpringLayout.NORTH, this);
-		layout.putConstraint(SpringLayout.WEST, nameLabel, 45, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.NORTH, nameLabel, 30, SpringLayout.NORTH, this);
+		layout.putConstraint(SpringLayout.WEST, nameLabel, 50, SpringLayout.WEST, this);
 
-		layout.putConstraint(SpringLayout.NORTH, nameField, 20, SpringLayout.NORTH, this);
+		layout.putConstraint(SpringLayout.NORTH, nameField, 26, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.WEST, nameField, 20, SpringLayout.EAST, nameLabel);
 
-		layout.putConstraint(SpringLayout.NORTH, phoneLabel, 20, SpringLayout.SOUTH, nameLabel);
-		layout.putConstraint(SpringLayout.WEST, phoneLabel, 45, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.NORTH, phoneLabel, 30, SpringLayout.SOUTH, nameLabel);
+		layout.putConstraint(SpringLayout.WEST, phoneLabel, 50, SpringLayout.WEST, this);
 
-		layout.putConstraint(SpringLayout.NORTH, phoneField, 0, SpringLayout.NORTH, phoneLabel);
+		layout.putConstraint(SpringLayout.NORTH, phoneField, -6, SpringLayout.NORTH, phoneLabel);
 		layout.putConstraint(SpringLayout.WEST, phoneField, 0, SpringLayout.WEST, nameField);
 
-		layout.putConstraint(SpringLayout.NORTH, barcodeLabel, 20, SpringLayout.SOUTH, phoneLabel);
-		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 45, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.NORTH, barcodeLabel, 30, SpringLayout.SOUTH, phoneLabel);
+		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 50, SpringLayout.WEST, this);
 
-		layout.putConstraint(SpringLayout.NORTH, barcodeField, 0, SpringLayout.NORTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.NORTH, barcodeField, -6, SpringLayout.NORTH, barcodeLabel);
 		layout.putConstraint(SpringLayout.WEST, barcodeField, 0, SpringLayout.WEST, nameField);
 
-		layout.putConstraint(SpringLayout.NORTH, registerButton, 20, SpringLayout.SOUTH, barcodeLabel);
-		layout.putConstraint(SpringLayout.WEST, registerButton, 30, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.NORTH, registerButton, 40, SpringLayout.SOUTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.WEST, registerButton, 110, SpringLayout.WEST, this);
 
-		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 20, SpringLayout.SOUTH, barcodeLabel);
-		layout.putConstraint(SpringLayout.WEST, showVotersButton, 20, SpringLayout.EAST, registerButton);
+		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 40, SpringLayout.SOUTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.WEST, showVotersButton, 40, SpringLayout.EAST, registerButton);
 
 		layout.putConstraint(SpringLayout.SOUTH, statusBarLabel, 0, SpringLayout.SOUTH, this.getContentPane());
 		layout.putConstraint(SpringLayout.WEST, statusBarLabel, 0, SpringLayout.WEST, this.getContentPane());
@@ -137,7 +145,7 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 
 		this.setLayout(layout);
 		this.setTitle("8th GCES IT Expo Voter Registration");
-		this.setSize(300, 300);
+		this.setSize(480, 300);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
@@ -179,38 +187,42 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 			String phone = phoneField.getText().trim();
 			String barcode = barcodeField.getText().trim();
 
-			try {
-				statement = connection.prepareStatement("INSERT INTO voters (name, phone, barcode) VALUES (?, ?, ?)");
-				statement.setString(1, name);
-				statement.setString(2, phone);
-				statement.setString(3, barcode);
-				int rows = statement.executeUpdate();
-				JOptionPane.showMessageDialog(this, "Voter Registration Successful!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
+			if (name.isEmpty() || phone.isEmpty() || barcode.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "One or more fields are empty!", "Field(s) empty!", JOptionPane.ERROR_MESSAGE);
+			} else {
+				try {
+					statement = connection.prepareStatement("INSERT INTO voters (name, phone, barcode) VALUES (?, ?, ?)");
+					statement.setString(1, name);
+					statement.setString(2, phone);
+					statement.setString(3, barcode);
+					int rows = statement.executeUpdate();
+					JOptionPane.showMessageDialog(this, "Voter Registration Successful!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
 
 //				Clear textfields
-				nameField.setText("");
-				phoneField.setText("");
-				barcodeField.setText("");
+					nameField.setText("");
+					phoneField.setText("");
+					barcodeField.setText("");
 
-				nameField.grabFocus();
-			} catch (MysqlDataTruncation ex) {
-				ex.printStackTrace();
-				if(ex.getMessage().contains("phone")) {
+					nameField.grabFocus();
+				} catch (MysqlDataTruncation ex) {
+					ex.printStackTrace();
+					if(ex.getMessage().contains("phone")) {
 //					Data too long for column 'phone'
-					ex.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Phone '" + phoneField.getText() + "' needs to be 10 digits or less!", "Phone number too long", JOptionPane.ERROR_MESSAGE);
-				}
-				JOptionPane.showMessageDialog(this, "Duplicate Barcode '" + barcodeField.getText() + "' !", "Duplicate entry", JOptionPane.ERROR_MESSAGE);
-			} catch (MySQLIntegrityConstraintViolationException ex) {
-				ex.printStackTrace();
-				if(ex.getMessage().contains("barcode")) {
-//					Duplicate barcode
-					ex.printStackTrace();
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(this, "Phone '" + phoneField.getText() + "' needs to be 10 digits or less!", "Phone number too long", JOptionPane.ERROR_MESSAGE);
+					}
 					JOptionPane.showMessageDialog(this, "Duplicate Barcode '" + barcodeField.getText() + "' !", "Duplicate entry", JOptionPane.ERROR_MESSAGE);
+				} catch (MySQLIntegrityConstraintViolationException ex) {
+					ex.printStackTrace();
+					if(ex.getMessage().contains("barcode")) {
+//					Duplicate barcode
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(this, "Duplicate Barcode '" + barcodeField.getText() + "' !", "Duplicate entry", JOptionPane.ERROR_MESSAGE);
+					}
+				} catch(SQLException ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
 				}
-			} catch(SQLException ex) {
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
