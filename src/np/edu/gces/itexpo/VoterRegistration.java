@@ -1,5 +1,7 @@
 package np.edu.gces.itexpo;
 
+import com.mysql.jdbc.exceptions.jdbc4.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -47,6 +49,13 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		phoneField.setFont(fieldFont);
 		barcodeField.setFont(fieldFont);
 
+		registerButton.setForeground(Color.BLUE);
+		registerButton.setBackground(Color.WHITE);
+
+		registerButton.setBorder(BorderFactory.createLineBorder(new Color(103, 128, 200)));
+		registerButton.setFocusPainted(false);
+		registerButton.setOpaque(true);
+		registerButton.setPreferredSize(new Dimension(100,40));
 		registerButton.addActionListener(this);
 
 //		Put constraints to components
@@ -134,6 +143,13 @@ public class VoterRegistration extends JFrame implements ActionListener {
 				statement.setString(3, barcode);
 				int rows = statement.executeUpdate();
 				JOptionPane.showMessageDialog(this, "Voter Registration Successful!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
+			} catch (MySQLIntegrityConstraintViolationException ex) {
+				System.out.println(ex.getMessage());
+				if(ex.getMessage().contains("barcode")) {
+//					Duplicate barcode
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(this, "Duplicate Barcode '" + barcodeField.getText() + "' !", "Duplicate entry", JOptionPane.ERROR_MESSAGE);
+				}
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
