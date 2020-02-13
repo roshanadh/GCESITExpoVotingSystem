@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-public class VoterRegistration extends JFrame implements ActionListener {
+public class VoterRegistration extends JFrame implements ActionListener, KeyListener {
 	private String databaseURL;
 	private String databaseID;
 	private String databaseName;
@@ -16,7 +16,7 @@ public class VoterRegistration extends JFrame implements ActionListener {
 	private Connection connection;
 	private PreparedStatement statement;
 
-	private JLabel nameLabel, phoneLabel, barcodeLabel;
+	private JLabel nameLabel, phoneLabel, barcodeLabel, statusBarLabel;
 	private JTextField nameField, phoneField, barcodeField;
 	private JButton registerButton, showVotersButton;
 
@@ -28,6 +28,7 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		nameLabel = new JLabel("Name");
 		phoneLabel = new JLabel("Phone");
 		barcodeLabel = new JLabel("Barcode");
+		statusBarLabel = new JLabel("GCES IT EXPO", SwingConstants.CENTER);
 
 		nameField = new JTextField(10);
 		phoneField = new JTextField(10);
@@ -41,6 +42,7 @@ public class VoterRegistration extends JFrame implements ActionListener {
 
 		layout = new SpringLayout();
 
+		statusBarLabel.setSize(new Dimension(this.getWidth(), 10));
 		nameLabel.setFont(labelFont);
 		phoneLabel.setFont(labelFont);
 		barcodeLabel.setFont(labelFont);
@@ -65,6 +67,21 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		showVotersButton.setOpaque(true);
 		showVotersButton.setPreferredSize(new Dimension(100,40));
 
+		nameField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				phoneField.grabFocus();
+			}
+		});
+		phoneField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				super.keyPressed(e);
+				barcodeField.grabFocus();
+			}
+		});
+		barcodeField.addKeyListener(this);
 		registerButton.addActionListener(this);
 
 //		Put constraints to components
@@ -92,6 +109,9 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 20, SpringLayout.SOUTH, barcodeLabel);
 		layout.putConstraint(SpringLayout.WEST, showVotersButton, 20, SpringLayout.EAST, registerButton);
 
+		layout.putConstraint(SpringLayout.SOUTH, statusBarLabel, 0, SpringLayout.SOUTH, this.getContentPane());
+		layout.putConstraint(SpringLayout.WEST, statusBarLabel, 0, SpringLayout.WEST, this.getContentPane());
+
 //		Add components to JFrame
 		this.add(nameLabel);
 		this.add(nameField);
@@ -105,9 +125,12 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		this.add(registerButton);
 		this.add(showVotersButton);
 
+		this.add(statusBarLabel);
+
+
 		this.setLayout(layout);
 		this.setTitle("8th GCES IT Expo Voter Registration");
-		this.setSize(300, 400);
+		this.setSize(300, 300);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
@@ -121,8 +144,12 @@ public class VoterRegistration extends JFrame implements ActionListener {
 			databasePassword = EnvironmentVariable.load("databasePassword");
 
 			System.out.println("Connecting to remote database...");
+			statusBarLabel.setText("Connecting to remote database...");
 			connection = DriverManager.getConnection(databaseURL, databaseID, databasePassword);
 			System.out.println("Connection to remote database established.");
+
+			statusBarLabel.setForeground(Color.GREEN);
+			statusBarLabel.setText("Connection to remote database established.");
 			statement = connection.prepareStatement("USE " + databaseName);
 			statement.executeUpdate();
 		} catch(SQLException e) {
@@ -168,5 +195,24 @@ public class VoterRegistration extends JFrame implements ActionListener {
 				barcodeField.setText("");
 			}
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+//			Enter key pressed
+			registerButton.doClick();
+			System.out.println("Pressed");
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+
 	}
 }
