@@ -167,30 +167,34 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 
-		try {
+		if(InternetChecker.isAvailable()) {
+			try {
 //			Load database credentials from custom EnvironmentVariable class
-			databaseURL = EnvironmentVariable.load("databaseURL");
-			databaseID = EnvironmentVariable.load("databaseID");
-			databaseName = EnvironmentVariable.load("databaseName");
-			databasePassword = EnvironmentVariable.load("databasePassword");
+				databaseURL = EnvironmentVariable.load("databaseURL");
+				databaseID = EnvironmentVariable.load("databaseID");
+				databaseName = EnvironmentVariable.load("databaseName");
+				databasePassword = EnvironmentVariable.load("databasePassword");
 
-			System.out.println("Connecting to remote database...");
-			statusBarLabel.setText("Connecting to remote database...");
+				System.out.println("Connecting to remote database...");
+				statusBarLabel.setText("Connecting to remote database...");
 
-			connection = DriverManager.getConnection(databaseURL, databaseID, databasePassword);
-			System.out.println("Connection to remote database established.");
-			statusBarLabel.setForeground(Color.GREEN);
-			statusBarLabel.setText("Connection to remote database established.");
-			registerButton.setEnabled(true);
-			showVotersButton.setEnabled(true);
-			statement = connection.prepareStatement("USE " + databaseName);
-			statement.executeUpdate();
-		} catch(SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(new VoterRegistration(), "Connection to database couldn't be established!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
-		} catch(Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(new VoterRegistration(), "Error while loading environment variable: " + e.getMessage(), "Environment Variable Error", JOptionPane.ERROR_MESSAGE);
+				connection = DriverManager.getConnection(databaseURL, databaseID, databasePassword);
+				System.out.println("Connection to remote database established.");
+				statusBarLabel.setForeground(Color.GREEN);
+				statusBarLabel.setText("Connection to remote database established.");
+				registerButton.setEnabled(true);
+				showVotersButton.setEnabled(true);
+				statement = connection.prepareStatement("USE " + databaseName);
+				statement.executeUpdate();
+			} catch(SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Connection to database couldn't be established!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
+			} catch(Exception e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Error while loading environment variable: " + e.getMessage(), "Environment Variable Error", JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(this, "Internet connection is not available! ", "Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
