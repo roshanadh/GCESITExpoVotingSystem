@@ -183,6 +183,13 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 				statement.setString(3, barcode);
 				int rows = statement.executeUpdate();
 				JOptionPane.showMessageDialog(this, "Voter Registration Successful!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
+
+//				Clear textfields
+				nameField.setText("");
+				phoneField.setText("");
+				barcodeField.setText("");
+
+				nameField.grabFocus();
 			} catch (MySQLIntegrityConstraintViolationException ex) {
 				System.out.println(ex.getMessage());
 				if(ex.getMessage().contains("barcode")) {
@@ -193,12 +200,6 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
-			} finally {
-				nameField.setText("");
-				phoneField.setText("");
-				barcodeField.setText("");
-
-				nameField.grabFocus();
 			}
 		}
 	}
@@ -213,7 +214,6 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 //			Enter key pressed
 			registerButton.doClick();
-			System.out.println("Pressed");
 		}
 	}
 
