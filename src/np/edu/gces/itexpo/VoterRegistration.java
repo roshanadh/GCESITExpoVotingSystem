@@ -11,22 +11,34 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class VoterRegistration extends JFrame implements ActionListener, KeyListener {
-	private String databaseURL;
-	private String databaseID;
-	private String databaseName;
-	private String databasePassword;
+	private static VoterRegistration instance = new VoterRegistration();
+	private static String databaseURL;
+	private static String databaseID;
+	private static String databaseName;
+	private static String databasePassword;
 
-	private Connection connection;
-	private PreparedStatement statement;
+	private static Connection connection;
+	private static PreparedStatement statement;
 
-	private JLabel nameLabel, phoneLabel, barcodeLabel, statusBarLabel;
+	private JLabel nameLabel, phoneLabel, barcodeLabel;
 	private JTextField nameField, phoneField, barcodeField;
-	private JButton registerButton, showVotersButton;
+
+//	Buttons are static so that they can be disabled from a static context (i.e. turnOff())
+	private static JButton registerButton, showVotersButton;
+	private static JLabel statusBarLabel;
 
 	private Font labelFont, fieldFont, buttonFont;
 	private SpringLayout layout;
 
-	public VoterRegistration() {
+	public static VoterRegistration getInstance() {
+		return instance;
+	}
+
+	private VoterRegistration() {
+//		Check internet connection in background
+		Thread worker = new Thread(new BackgroundWorker());
+		worker.start();
+
 //		Define components
 		nameLabel = new JLabel("Name");
 		phoneLabel = new JLabel("Phone");
@@ -74,11 +86,13 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		registerButton.setBackground(Color.WHITE);
 		registerButton.setFont(buttonFont);
 		registerButton.setPreferredSize(new Dimension(150,40));
+		registerButton.setEnabled(false);
 
 		showVotersButton.setForeground(new Color(75, 119, 190));
 		showVotersButton.setBackground(Color.WHITE);
 		showVotersButton.setFont(buttonFont);
 		showVotersButton.setPreferredSize(new Dimension(150,40));
+		showVotersButton.setEnabled(false);
 
 		nameField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -162,23 +176,50 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 
 			System.out.println("Connecting to remote database...");
 			statusBarLabel.setText("Connecting to remote database...");
+
 			connection = DriverManager.getConnection(databaseURL, databaseID, databasePassword);
 			System.out.println("Connection to remote database established.");
-
 			statusBarLabel.setForeground(Color.GREEN);
 			statusBarLabel.setText("Connection to remote database established.");
+			registerButton.setEnabled(true);
+			showVotersButton.setEnabled(true);
 			statement = connection.prepareStatement("USE " + databaseName);
 			statement.executeUpdate();
 		} catch(SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Connection to database couldn't be established!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new VoterRegistration(), "Connection to database couldn't be established!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
 		} catch(Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error while loading environment variable: " + e.getMessage(), "Environment Variable Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new VoterRegistration(), "Error while loading environment variable: " + e.getMessage(), "Environment Variable Error", JOptionPane.ERROR_MESSAGE);
 		}
+
 	}
+
+	public static boolean isOn() throws SQLException {
+		return registerButton.isEnabled() ? true : false;
+	}
+
+	public static void turnOff() {
+//		Disable buttons
+//		This method is invoked if internet is not available
+		registerButton.setEnabled(false);
+		showVotersButton.setEnabled(false);
+		statusBarLabel.setForeground(Color.RED);
+		statusBarLabel.setText("Internet connection is not available!");
+	}
+
+	public static void turnOn() {
+//		Enable buttons
+//		This method is invoked if internet is available
+		registerButton.setEnabled(true);
+		showVotersButton.setEnabled(true);
+		statusBarLabel.setForeground(Color.GREEN);
+		statusBarLabel.setText("Connection to remote database established.");
+
+	}
+
 	public static void main(String[] args) {
-		new VoterRegistration();
+		VoterRegistration.getInstance();
 	}
 
 	@Override
