@@ -71,14 +71,18 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 			@Override
 			public void keyPressed(KeyEvent e) {
 				super.keyPressed(e);
-				phoneField.grabFocus();
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					phoneField.grabFocus();
+				}
 			}
 		});
 		phoneField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				super.keyPressed(e);
-				barcodeField.grabFocus();
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					barcodeField.grabFocus();
+				}
 			}
 		});
 		barcodeField.addKeyListener(this);
@@ -193,6 +197,8 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 				nameField.setText("");
 				phoneField.setText("");
 				barcodeField.setText("");
+
+				nameField.grabFocus();
 			}
 		}
 	}
