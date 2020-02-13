@@ -18,6 +18,9 @@ public class VoterRegistration extends JFrame implements ActionListener {
 	private JTextField nameField, phoneField, barcodeField;
 	private JButton registerButton, showVotersButton;
 
+	private Font labelFont, fieldFont;
+	private SpringLayout layout;
+
 	public VoterRegistration() {
 //		Define components
 		nameLabel = new JLabel("Name");
@@ -31,7 +34,45 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		registerButton = new JButton("Register Voter");
 		showVotersButton = new JButton("Show Voters");
 
+		labelFont = new Font("Segoe UI", Font.PLAIN, 13);
+		fieldFont = new Font("Verdana", Font.PLAIN, 13);
+
+		layout = new SpringLayout();
+
+		nameLabel.setFont(labelFont);
+		phoneLabel.setFont(labelFont);
+		barcodeLabel.setFont(labelFont);
+
+		nameField.setFont(fieldFont);
+		phoneField.setFont(fieldFont);
+		barcodeField.setFont(fieldFont);
+
 		registerButton.addActionListener(this);
+
+//		Put constraints to components
+		layout.putConstraint(SpringLayout.NORTH, nameLabel, 20, SpringLayout.NORTH, this);
+		layout.putConstraint(SpringLayout.WEST, nameLabel, 20, SpringLayout.WEST, this);
+
+		layout.putConstraint(SpringLayout.NORTH, nameField, 20, SpringLayout.NORTH, this);
+		layout.putConstraint(SpringLayout.WEST, nameField, 20, SpringLayout.EAST, nameLabel);
+
+		layout.putConstraint(SpringLayout.NORTH, phoneLabel, 20, SpringLayout.SOUTH, nameLabel);
+		layout.putConstraint(SpringLayout.WEST, phoneLabel, 20, SpringLayout.WEST, this);
+
+		layout.putConstraint(SpringLayout.NORTH, phoneField, 0, SpringLayout.NORTH, phoneLabel);
+		layout.putConstraint(SpringLayout.WEST, phoneField, 0, SpringLayout.WEST, nameField);
+
+		layout.putConstraint(SpringLayout.NORTH, barcodeLabel, 20, SpringLayout.SOUTH, phoneLabel);
+		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 20, SpringLayout.WEST, this);
+
+		layout.putConstraint(SpringLayout.NORTH, barcodeField, 0, SpringLayout.NORTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.WEST, barcodeField, 0, SpringLayout.WEST, nameField);
+
+		layout.putConstraint(SpringLayout.NORTH, registerButton, 20, SpringLayout.SOUTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.WEST, registerButton, 20, SpringLayout.WEST, this);
+
+		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 20, SpringLayout.SOUTH, barcodeLabel);
+		layout.putConstraint(SpringLayout.WEST, showVotersButton, 20, SpringLayout.EAST, registerButton);
 
 //		Add components to JFrame
 		this.add(nameLabel);
@@ -46,9 +87,9 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		this.add(registerButton);
 		this.add(showVotersButton);
 
-		this.setLayout(new FlowLayout());
+		this.setLayout(layout);
 		this.setTitle("8th GCES IT Expo Voter Registration");
-		this.setSize(500, 500);
+		this.setSize(300, 400);
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
@@ -96,6 +137,10 @@ public class VoterRegistration extends JFrame implements ActionListener {
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
+			} finally {
+				nameField.setText("");
+				phoneField.setText("");
+				barcodeField.setText("");
 			}
 		}
 	}
