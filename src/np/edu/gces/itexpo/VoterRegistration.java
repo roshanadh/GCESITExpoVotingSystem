@@ -56,29 +56,38 @@ public class VoterRegistration extends JFrame implements ActionListener {
 		registerButton.setFocusPainted(false);
 		registerButton.setOpaque(true);
 		registerButton.setPreferredSize(new Dimension(100,40));
+
+		showVotersButton.setForeground(Color.BLUE);
+		showVotersButton.setBackground(Color.WHITE);
+
+		showVotersButton.setBorder(BorderFactory.createLineBorder(new Color(103, 128, 200)));
+		showVotersButton.setFocusPainted(false);
+		showVotersButton.setOpaque(true);
+		showVotersButton.setPreferredSize(new Dimension(100,40));
+
 		registerButton.addActionListener(this);
 
 //		Put constraints to components
 		layout.putConstraint(SpringLayout.NORTH, nameLabel, 20, SpringLayout.NORTH, this);
-		layout.putConstraint(SpringLayout.WEST, nameLabel, 20, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, nameLabel, 45, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, nameField, 20, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.WEST, nameField, 20, SpringLayout.EAST, nameLabel);
 
 		layout.putConstraint(SpringLayout.NORTH, phoneLabel, 20, SpringLayout.SOUTH, nameLabel);
-		layout.putConstraint(SpringLayout.WEST, phoneLabel, 20, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, phoneLabel, 45, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, phoneField, 0, SpringLayout.NORTH, phoneLabel);
 		layout.putConstraint(SpringLayout.WEST, phoneField, 0, SpringLayout.WEST, nameField);
 
 		layout.putConstraint(SpringLayout.NORTH, barcodeLabel, 20, SpringLayout.SOUTH, phoneLabel);
-		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 20, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, barcodeLabel, 45, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, barcodeField, 0, SpringLayout.NORTH, barcodeLabel);
 		layout.putConstraint(SpringLayout.WEST, barcodeField, 0, SpringLayout.WEST, nameField);
 
 		layout.putConstraint(SpringLayout.NORTH, registerButton, 20, SpringLayout.SOUTH, barcodeLabel);
-		layout.putConstraint(SpringLayout.WEST, registerButton, 20, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.WEST, registerButton, 30, SpringLayout.WEST, this);
 
 		layout.putConstraint(SpringLayout.NORTH, showVotersButton, 20, SpringLayout.SOUTH, barcodeLabel);
 		layout.putConstraint(SpringLayout.WEST, showVotersButton, 20, SpringLayout.EAST, registerButton);
