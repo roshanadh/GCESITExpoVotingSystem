@@ -54,7 +54,7 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		registerButton.setForeground(Color.BLUE);
 		registerButton.setBackground(Color.WHITE);
 
-		registerButton.setBorder(BorderFactory.createLineBorder(new Color(103, 128, 200)));
+		registerButton.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		registerButton.setFocusPainted(false);
 		registerButton.setOpaque(true);
 		registerButton.setPreferredSize(new Dimension(100,40));
@@ -62,7 +62,7 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 		showVotersButton.setForeground(Color.BLUE);
 		showVotersButton.setBackground(Color.WHITE);
 
-		showVotersButton.setBorder(BorderFactory.createLineBorder(new Color(103, 128, 200)));
+		showVotersButton.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		showVotersButton.setFocusPainted(false);
 		showVotersButton.setOpaque(true);
 		showVotersButton.setPreferredSize(new Dimension(100,40));
