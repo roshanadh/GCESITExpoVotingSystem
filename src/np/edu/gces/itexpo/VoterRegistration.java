@@ -1,11 +1,14 @@
 package np.edu.gces.itexpo;
 
+import com.mysql.jdbc.*;
 import com.mysql.jdbc.exceptions.jdbc4.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class VoterRegistration extends JFrame implements ActionListener, KeyListener {
 	private String databaseURL;
@@ -190,8 +193,16 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 				barcodeField.setText("");
 
 				nameField.grabFocus();
+			} catch (MysqlDataTruncation ex) {
+				ex.printStackTrace();
+				if(ex.getMessage().contains("phone")) {
+//					Data too long for column 'phone'
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(this, "Phone '" + phoneField.getText() + "' needs to be 10 digits or less!", "Phone number too long", JOptionPane.ERROR_MESSAGE);
+				}
+				JOptionPane.showMessageDialog(this, "Duplicate Barcode '" + barcodeField.getText() + "' !", "Duplicate entry", JOptionPane.ERROR_MESSAGE);
 			} catch (MySQLIntegrityConstraintViolationException ex) {
-				System.out.println(ex.getMessage());
+				ex.printStackTrace();
 				if(ex.getMessage().contains("barcode")) {
 //					Duplicate barcode
 					ex.printStackTrace();
