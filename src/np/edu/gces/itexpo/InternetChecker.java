@@ -8,8 +8,7 @@ public class InternetChecker {
 		try {
 			return InetAddress.getByName("google.com").isReachable(200) ? true : false;
 		} catch (Exception e) {
-			e.printStackTrace();
+			return false;
 		}
-		return false;
 	}
 }
