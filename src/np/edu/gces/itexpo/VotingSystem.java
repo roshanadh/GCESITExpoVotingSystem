@@ -27,7 +27,7 @@ public class VotingSystem extends JFrame implements ActionListener {
 
 	private ButtonGroup projectGroup;
 	private JRadioButton cineDigestBtn, clmsBtn, cookSmartBtn, dxBtn, emotionBtn, foodhutBtn
-			, iPostBtn, janaBtn, khullamannBtn, loburBtn, meroSaapatiBtn, pahichaanBtn, parkSmartBtn
+			, gcesBtn, iPostBtn, janaBtn, khullamannBtn, loburBtn, meroSaapatiBtn, pahichaanBtn, parkSmartBtn
 			, phohorBtn, projectionBtn, quizBtn, recordBookBtn, ruralStayBtn, schoolBusBtn, securityBtn
 			, sensorBtn, shareBloodBtn	, smartBinBtn, travmyoBtn, studyBtn;
 
@@ -42,7 +42,7 @@ public class VotingSystem extends JFrame implements ActionListener {
 
 	private VotingSystem() {
 		//		Check internet connection in background
-		Thread worker = new Thread(new BackgroundRegWorker());
+		Thread worker = new Thread(new BackgroundVoterWorker());
 		worker.start();
 
 		barcodeLabel = new JLabel("Barcode");
@@ -64,6 +64,7 @@ public class VotingSystem extends JFrame implements ActionListener {
 		dxBtn = new JRadioButton("DX Game on Arduino", false);
 		emotionBtn = new JRadioButton("Emotion Recognition", false);
 		foodhutBtn = new JRadioButton("FOODHut", false);
+		gcesBtn = new JRadioButton("GCES Model", false);
 		iPostBtn = new JRadioButton("iPost", false);
 		janaBtn = new JRadioButton("Jana Ghatana", false);
 		khullamannBtn = new JRadioButton("Khullamann", false);
@@ -128,6 +129,7 @@ public class VotingSystem extends JFrame implements ActionListener {
 		panel.add(dxBtn);
 		panel.add(emotionBtn);
 		panel.add(foodhutBtn);
+		panel.add(gcesBtn);
 		panel.add(iPostBtn);
 		panel.add(janaBtn);
 		panel.add(khullamannBtn);
@@ -154,6 +156,7 @@ public class VotingSystem extends JFrame implements ActionListener {
 		projectGroup.add(dxBtn);
 		projectGroup.add(emotionBtn);
 		projectGroup.add(foodhutBtn);
+		projectGroup.add(gcesBtn);
 		projectGroup.add(iPostBtn);
 		projectGroup.add(janaBtn);
 		projectGroup.add(khullamannBtn);
@@ -277,67 +280,69 @@ public class VotingSystem extends JFrame implements ActionListener {
 				} else if(foodhutBtn.isSelected()) {
 					vote = 6;
 					break;
-				} else if(iPostBtn.isSelected()) {
+				} else if(gcesBtn.isSelected()) {
 					vote = 7;
 					break;
-				} else if(janaBtn.isSelected()) {
+				} else if(iPostBtn.isSelected()) {
 					vote = 8;
 					break;
-				} else if(khullamannBtn.isSelected()) {
+				} else if(janaBtn.isSelected()) {
 					vote = 9;
 					break;
-				} else if(loburBtn.isSelected()) {
+				} else if(khullamannBtn.isSelected()) {
 					vote = 10;
 					break;
-				} else if(meroSaapatiBtn.isSelected()) {
+				} else if(loburBtn.isSelected()) {
 					vote = 11;
 					break;
-				} else if(pahichaanBtn.isSelected()) {
+				} else if(meroSaapatiBtn.isSelected()) {
 					vote = 12;
 					break;
-				} else if(parkSmartBtn.isSelected()) {
+				} else if(pahichaanBtn.isSelected()) {
 					vote = 13;
 					break;
-				} else if(phohorBtn.isSelected()) {
+				} else if(parkSmartBtn.isSelected()) {
 					vote = 14;
 					break;
-				} else if(projectionBtn.isSelected()) {
+				} else if(phohorBtn.isSelected()) {
 					vote = 15;
 					break;
-				} else if(quizBtn.isSelected()) {
+				} else if(projectionBtn.isSelected()) {
 					vote = 16;
 					break;
-				} else if(recordBookBtn.isSelected()) {
+				} else if(quizBtn.isSelected()) {
 					vote = 17;
 					break;
-				} else if(ruralStayBtn.isSelected()) {
+				} else if(recordBookBtn.isSelected()) {
 					vote = 18;
 					break;
-				} else if(schoolBusBtn.isSelected()) {
+				} else if(ruralStayBtn.isSelected()) {
 					vote = 19;
 					break;
-				} else if(securityBtn.isSelected()) {
+				} else if(schoolBusBtn.isSelected()) {
 					vote = 20;
 					break;
-				} else if(sensorBtn.isSelected()) {
+				} else if(securityBtn.isSelected()) {
 					vote = 21;
 					break;
-				} else if(shareBloodBtn.isSelected()) {
+				} else if(sensorBtn.isSelected()) {
 					vote = 22;
 					break;
-				} else if(smartBinBtn.isSelected()) {
+				} else if(shareBloodBtn.isSelected()) {
 					vote = 23;
 					break;
-				} else if(studyBtn.isSelected()) {
+				} else if(smartBinBtn.isSelected()) {
 					vote = 24;
 					break;
-				} else if(travmyoBtn.isSelected()) {
+				} else if(studyBtn.isSelected()) {
 					vote = 25;
+					break;
+				} else if(travmyoBtn.isSelected()) {
+					vote = 26;
 					break;
 				}
 			}
 
-			System.out.println("The selected button is: " + vote);
 			if (barcode.isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Barcode field is empty!", "Field empty!", JOptionPane.ERROR_MESSAGE);
 			} else {
@@ -345,30 +350,38 @@ public class VotingSystem extends JFrame implements ActionListener {
 					statement = connection.prepareStatement("SELECT voted FROM voters WHERE barcode=?");
 					statement.setString(1, barcode);
 					ResultSet rs = statement.executeQuery();
-					int voted = -1;
-					while (rs.next()) {
-						voted = rs.getInt("voted");
-						System.out.println(voted + " is the retrieved voted!");
-					}
-					if(voted == 0) {
-//						Voter has not voted
-						statement = connection.prepareStatement("UPDATE voters SET vote=?, voted=? WHERE barcode=?");
-						statement.setInt(1, vote);
-						statement.setInt(2, 1);
-						statement.setString(3, barcode);
-						int rows = statement.executeUpdate();
-						JOptionPane.showMessageDialog(this, "Vote was successfully registered!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
+					boolean voted = false;
+					if(rs.next() == false) {
+//						Voter is not registered
+						JOptionPane.showMessageDialog(this, "The specified barcode has not been registered to cast a vote!", "Not Registered", JOptionPane.ERROR_MESSAGE);
+						barcodeField.setText("");
+						cineDigestBtn.setSelected(true);
+
+					} else {
+						System.out.println("RS is not empty");
+						do {
+							System.out.println("Inside loop");
+							voted = rs.getBoolean("voted");
+							System.out.println(voted + " is the retrieved voted!");
+						} while (rs.next());
+						if(voted == false) {
+							statement = connection.prepareStatement("UPDATE voters SET vote=?, voted=? WHERE barcode=?");
+							statement.setInt(1, vote);
+							statement.setInt(2, 1);
+							statement.setString(3, barcode);
+							int rows = statement.executeUpdate();
+							JOptionPane.showMessageDialog(this, "Vote was successfully registered!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
 
 //				Clear textfields
-						barcodeField.setText("");
-						cineDigestBtn.setSelected(true);
-					} else {
+							barcodeField.setText("");
+							cineDigestBtn.setSelected(true);
+						} else if (voted == true){
 //						Voter has already voted
-						JOptionPane.showMessageDialog(this, "The specified barcode has already cast a vote!", "Already Voted", JOptionPane.ERROR_MESSAGE);
-						barcodeField.setText("");
-						cineDigestBtn.setSelected(true);
+							JOptionPane.showMessageDialog(this, "The specified barcode has already cast a vote!", "Already Voted", JOptionPane.ERROR_MESSAGE);
+							barcodeField.setText("");
+							cineDigestBtn.setSelected(true);
+						}
 					}
-
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Couldn't push to database!", "MySQL Error", JOptionPane.ERROR_MESSAGE);
