@@ -6,11 +6,11 @@ public class BackgroundVoterWorker implements Runnable {
 		while(true) {
 			try {
 				if(!InternetChecker.isAvailable()) {
-					if(VoterRegistration.isOn()) {
+					if(VotingSystem.isOn()) {
 						VotingSystem.turnOff();
 					}
 				} else {
-					if(!VoterRegistration.isOn()) {
+					if(!VotingSystem.isOn()) {
 						VotingSystem.turnOn();
 					}
 				}
