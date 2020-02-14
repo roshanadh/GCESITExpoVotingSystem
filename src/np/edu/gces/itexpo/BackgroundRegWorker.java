@@ -1,6 +1,6 @@
 package np.edu.gces.itexpo;
 
-public class BackgroundWorker implements Runnable {
+public class BackgroundRegWorker implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
