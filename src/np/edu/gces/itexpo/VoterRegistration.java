@@ -36,7 +36,7 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 
 	private VoterRegistration() {
 //		Check internet connection in background
-		Thread worker = new Thread(new BackgroundWorker());
+		Thread worker = new Thread(new BackgroundRegWorker());
 		worker.start();
 
 //		Define components
@@ -238,10 +238,11 @@ public class VoterRegistration extends JFrame implements ActionListener, KeyList
 				JOptionPane.showMessageDialog(this, "One or more fields are empty!", "Field(s) empty!", JOptionPane.ERROR_MESSAGE);
 			} else {
 				try {
-					statement = connection.prepareStatement("INSERT INTO voters (name, phone, barcode) VALUES (?, ?, ?)");
+					statement = connection.prepareStatement("INSERT INTO voters (name, phone, barcode, voted) VALUES (?, ?, ?, ?)");
 					statement.setString(1, name);
 					statement.setString(2, phone);
 					statement.setString(3, barcode);
+					statement.setInt(4, 0);
 					int rows = statement.executeUpdate();
 					JOptionPane.showMessageDialog(this, "Voter Registration Successful!", rows + " row(s) updated", JOptionPane.INFORMATION_MESSAGE);
 

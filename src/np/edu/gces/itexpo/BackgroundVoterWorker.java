@@ -1,17 +1,17 @@
 package np.edu.gces.itexpo;
 
-public class BackgroundWorker implements Runnable {
+public class BackgroundVoterWorker implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
 			try {
 				if(!InternetChecker.isAvailable()) {
-					if(VoterRegistration.isOn()) {
-						VoterRegistration.turnOff();
+					if(VotingSystem.isOn()) {
+						VotingSystem.turnOff();
 					}
 				} else {
-					if(!VoterRegistration.isOn()) {
-						VoterRegistration.turnOn();
+					if(!VotingSystem.isOn()) {
+						VotingSystem.turnOn();
 					}
 				}
 			} catch (Exception e) {
