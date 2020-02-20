@@ -1,5 +1,5 @@
 # 8th GCES IT Expo Voting System
-The system comprises two GUI application: one for voter registration and the other for vote submission.
+The system comprises two GUI applications: one for voter registration and the other for vote submission.
 
 ## Build
 * Applications built using Java Swing and AWT classes
